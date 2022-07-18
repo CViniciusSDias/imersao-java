@@ -13,7 +13,7 @@ $corClassificacao = "\u{001b}[37m\u{001b}[45m";
 
 // Exibição dos dados recuperados
 foreach ($respostaParseada->items as $filme) {
-    $estrelas = notaParaEstrelas($filme->imDbRating);
+    $estrelas = is_numeric($filme->imDbRating) ? notaParaEstrelas($filme->imDbRating) : '';
 
     echo <<<FIM
     {$negrito}Título:{$semEstilo} $filme->title

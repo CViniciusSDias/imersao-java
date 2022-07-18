@@ -1,7 +1,7 @@
 <?php
 
 // Requisição para a API
-$url = 'https://alura-filmes.herokuapp.com/conteudos';
+$url = $_SERVER['API_ENDPOINT'] ?? 'https://alura-filmes.herokuapp.com/conteudos';
 
 $resposta = file_get_contents($url);
 $respostaParseada = json_decode($resposta);

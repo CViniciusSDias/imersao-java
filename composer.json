@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "psr-4": {
+            "ImersaoJava\\": "src/"
+        }
+    },
+    "require": {
+        "ext-imagick": "*",
+        "php": ">=8.1"
+    }
+}

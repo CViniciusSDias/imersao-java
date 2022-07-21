@@ -96,5 +96,5 @@ function criaFigurinha(string $caminhoImagem, string $texto): string
 
 function imagemSemTamanho(string $caminhoCompletoImagem): string
 {
-    return preg_replace('/@\..\.jpg/', '@.jpg', $caminhoCompletoImagem);
+    return preg_replace('/(@+)(.*).jpg$/', '$1.jpg', $caminhoCompletoImagem);
 }

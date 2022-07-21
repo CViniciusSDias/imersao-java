@@ -12,7 +12,7 @@ $negrito = "\u{001b}[1m";
 $corClassificacao = "\u{001b}[37m\u{001b}[45m";
 
 // Exibição dos dados recuperados
-foreach ([$respostaParseada->items[0]] as $filme) {
+foreach ($respostaParseada->items as $filme) {
     $estrelas = is_numeric($filme->imDbRating) ? notaParaEstrelas($filme->imDbRating) : '';
 
     $imagem = imagemSemTamanho($filme->image);
@@ -74,5 +74,5 @@ function criaFigurinha(string $caminhoImagem): string
 
 function imagemSemTamanho(string $caminhoCompletoImagem): string
 {
-    return preg_replace('/\@(.*)\.jpg/', '@.jpg', $caminhoCompletoImagem);
+    return preg_replace('/\@\..\.jpg/', '@.jpg', $caminhoCompletoImagem);
 }

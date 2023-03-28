@@ -14,7 +14,10 @@ $emojiEstrela = "\u{2B50}";
 
 // Exibição dos dados recuperados
 foreach ($respostaParseada->items as $filme) {
-	$estrelas = str_repeat($emojiEstrela, round($filme->imDbRating));
+    $estrelas = '';
+    if (is_numeric($filme->imDbRating)) {
+        $estrelas = str_repeat($emojiEstrela, round($filme->imDbRating));
+    }
 
     echo <<<FIM
     {$negrito}Título:{$semEstilo} $filme->title

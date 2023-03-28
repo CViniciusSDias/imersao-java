@@ -1,7 +1,7 @@
 <?php
 
 // Requisição para a API
-$url = $_SERVER['API_ENDPOINT'] ?? 'https://alura-filmes.herokuapp.com/conteudos';
+$url = $_SERVER['API_ENDPOINT'] ?? 'https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json';
 
 $resposta = file_get_contents($url);
 $respostaParseada = json_decode($resposta);
@@ -10,10 +10,11 @@ $respostaParseada = json_decode($resposta);
 $semEstilo = "\u{001b}[m";
 $negrito = "\u{001b}[1m";
 $corClassificacao = "\u{001b}[37m\u{001b}[45m";
+$emojiEstrela = "\u{2B50}";
 
 // Exibição dos dados recuperados
 foreach ($respostaParseada->items as $filme) {
-    $estrelas = is_numeric($filme->imDbRating) ? notaParaEstrelas($filme->imDbRating) : '';
+	$estrelas = str_repeat($emojiEstrela, round($filme->imDbRating));
 
     echo <<<FIM
     {$negrito}Título:{$semEstilo} $filme->title
@@ -23,12 +24,4 @@ foreach ($respostaParseada->items as $filme) {
     
     
     FIM;
-}
-
-function notaParaEstrelas(float $nota): string
-{
-    $emojiEstrela = "\u{2B50}";
-    $arrayEstrelas = array_fill(0, round($nota), $emojiEstrela);
-
-    return implode('', $arrayEstrelas);
 }

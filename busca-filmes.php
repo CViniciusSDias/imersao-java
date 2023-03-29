@@ -71,6 +71,8 @@ function criaFigurinha(string $caminhoImagem, string $texto): string
     $definicoesDaFonte->setFillColor(new ImagickPixel('#9b870c'));
     $definicoesDaFonte->setFontSize(64);
     $definicoesDaFonte->setGravity(Imagick::GRAVITY_NORTHWEST);
+    $definicoesDaFonte->setStrokeColor(new ImagickPixel('black'));
+    $definicoesDaFonte->setStrokeWidth(2);
 
     // Obtém as dimensões da caixa do texto
     $caixaDeTexto = $novaImagem->queryFontMetrics($definicoesDaFonte, $texto);

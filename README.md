@@ -26,6 +26,5 @@ API_ENDPOINT="https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/
 
 Ou usando Docker:
 ```shell
-docker run --rm -itv $(pwd):/app -w /app -e API_ENDPOINT="https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json" php-docker php aula-1.php
->>>>>>> Gerando imagem com texto a partir do poster do filme
+docker run --rm -itv $(pwd):/app -w /app -e API_ENDPOINT="https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json" php-docker php busca-filmes.php
 ```

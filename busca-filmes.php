@@ -28,10 +28,14 @@ foreach ($respostaParseada->items as $filme) {
     
     
     FIM;
-    criaFigurinha($imagem);
+    criaFigurinha($imagem, $filme->imDbRating > 9 ? 'Bom filme!' : 'Mais ou menos');
 }
 
-function criaFigurinha(string $caminhoImagem): string
+/**
+ * @throws ImagickDrawException
+ * @throws ImagickException
+ */
+function criaFigurinha(string $caminhoImagem, string $texto): string
 {
     // Cria a pasta saída se ainda não existir
     $caminhoSaida = __DIR__ . '/saida';
@@ -44,22 +48,42 @@ function criaFigurinha(string $caminhoImagem): string
     $larguraOriginal = $imagemOriginal->getImageWidth();
     $alturaOriginal = $imagemOriginal->getImageHeight();
 
+    // Redimensiona a imagem original para ter 500px de largura no máximo
+    $novaLargura = min($larguraOriginal, 500);
+    $proporcao = $novaLargura / $larguraOriginal;
+    $novaAltura = intval($alturaOriginal * $proporcao);
+    $imagemOriginal->resizeImage($novaLargura, $novaAltura, Imagick::FILTER_POINT, 0);
+
     // Cria a nova imagem com fundo transparente e 100px a mais de altura
     $novaImagem = new Imagick();
     $novaImagem->newImage(
-        $larguraOriginal,
-        $alturaOriginal + 100,
-        new ImagickPixel('transparent')
+        $novaLargura,
+        $novaAltura + 100,
+        new ImagickPixel('transparent'),
+        'png'
     );
     // Adiciona a imagem original a essa nova imagem
     $novaImagem->compositeImage($imagemOriginal, Imagick::COMPOSITE_ADD, 0, 0);
 
-    // Escreve na nova imagem
+    // Define as propriedades da fonte para o texto
     $definicoesDaFonte = new ImagickDraw();
-    $definicoesDaFonte->setFont('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf');
+    $definicoesDaFonte->setFont(__DIR__ . '/impact.ttf');
     $definicoesDaFonte->setFillColor(new ImagickPixel('#9b870c'));
     $definicoesDaFonte->setFontSize(64);
-    $novaImagem->annotateImage($definicoesDaFonte, 0, $alturaOriginal + 75, 0, 'Texto de teste');
+    $definicoesDaFonte->setGravity(Imagick::GRAVITY_NORTHWEST);
+
+    // Obtém as dimensões da caixa do texto
+    $caixaDeTexto = $novaImagem->queryFontMetrics($definicoesDaFonte, $texto);
+    $larguraDoTexto = $caixaDeTexto['textWidth'];
+
+    // Escreve na nova imagem
+    $novaImagem->annotateImage(
+        $definicoesDaFonte,
+        ($novaLargura - $larguraDoTexto) / 2,
+        $novaAltura,
+        0,
+        $texto
+    );
 
     // Salva a nova imagem
     $imagemSaida = $caminhoSaida . '/' . basename($caminhoImagem, '.jpg') . '.png';
@@ -70,5 +94,5 @@ function criaFigurinha(string $caminhoImagem): string
 
 function imagemSemTamanho(string $caminhoCompletoImagem): string
 {
-    return preg_replace('/\@\..\.jpg/', '@.jpg', $caminhoCompletoImagem);
+    return preg_replace('/@\..\.jpg/', '@.jpg', $caminhoCompletoImagem);
 }

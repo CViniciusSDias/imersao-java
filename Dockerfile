@@ -1,4 +1,4 @@
-FROM php:8.1
+FROM php:8.2
 
 RUN apt update && apt install -y libmagickwand-dev --no-install-recommends
 RUN pecl install imagick

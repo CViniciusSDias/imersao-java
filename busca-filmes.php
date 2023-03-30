@@ -1,29 +1,34 @@
 <?php
 
-use ImersaoJava\FabricaDeExtrator;
+use ImersaoJava\ExtratorConteudoImdb;
+use ImersaoJava\ExtratorConteudoNasa;
 use ImersaoJava\GeradorFigurinha;
+use parallel\Runtime;
 
 require_once 'vendor/autoload.php';
 
-// Define a URL padrão 50% das vezes para a do IMDB e 50% das vezes para a da NASA
-$urlPadrao = rand() % 2 === 0
-    ? 'https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json'
-    : 'https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json';
-// Usa a URL padrão somente se a variável de ambiente não estiver definida
-$url = $_SERVER['API_ENDPOINT'] ?? $urlPadrao;
+$runtime = new Runtime(__DIR__ . '/vendor/autoload.php');
+$future = $runtime->run(function () {
+    $imdbEndpoint = $_SERVER['IMDB_API_ENDPOINT'] ?? 'https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json';
+    $respostaImdb = file_get_contents($imdbEndpoint);
+    $extratorImdb = new ExtratorConteudoImdb();
+    $filmes = $extratorImdb->extraiConteudos($respostaImdb);
 
-$resposta = file_get_contents($url);
-$extrator = FabricaDeExtrator::criaExtrator($url);
-if (is_null($extrator)) {
-    echo 'URL não reconhecida' . PHP_EOL;
-}
+    $geradorFigurinha = new GeradorFigurinha(__DIR__ . '/saida');
+    foreach ($filmes as $conteudo) {
+        echo "\u{001b}[1mTítulo do filme:\u{001b}[m {$conteudo->titulo}" . PHP_EOL;
+        $geradorFigurinha->geraFigurinha($conteudo->urlImagem, "Imersão Java");
+    }
+});
 
-$respostaParseada = $extrator->extraiConteudos($resposta);
+$nasaEndpoint = $_SERVER['NASA_API_ENDPOINT'] ?? 'https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json';
+$respostaNasa = file_get_contents($nasaEndpoint);
+$extratorNasa = new ExtratorConteudoNasa();
 
-// Definições de estilo
+$fotos = $extratorNasa->extraiConteudos($respostaNasa);
+
 $gerador = new GeradorFigurinha(__DIR__ . '/saida');
-// Exibição dos dados recuperados
-foreach ($respostaParseada as $conteudo) {
-    echo "\u{001b}[1mTítulo:\u{001b}[m {$conteudo->titulo}" . PHP_EOL;
+foreach ($fotos as $conteudo) {
+    echo "\u{001b}[1mTítulo da NASA:\u{001b}[m {$conteudo->titulo}" . PHP_EOL;
     $gerador->geraFigurinha($conteudo->urlImagem, "Imersão Java");
 }

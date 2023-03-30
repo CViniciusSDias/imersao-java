@@ -66,7 +66,7 @@ readonly class GeradorFigurinha
     private function definicoesDeFonte(): ImagickDraw
     {
         $definicoes = new ImagickDraw();
-        $definicoes->setFont(__DIR__ . '/impact.ttf');
+        $definicoes->setFont(__DIR__ . '/../impact.ttf');
         $definicoes->setFillColor(new ImagickPixel('#9b870c'));
         $definicoes->setFontSize(64);
         $definicoes->setGravity(Imagick::GRAVITY_NORTHWEST);

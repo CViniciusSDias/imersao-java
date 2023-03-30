@@ -12,9 +12,14 @@ class ExtratorConteudoImdb implements ExtratorConteudo
         return array_map(
             fn (object $filme) => new Conteudo(
                 $filme->title,
-                preg_replace('/(@+)(.*).jpg$/', '$1.jpg', $filme->image)
+                $this->recuperaUrlImagemGrande($filme->image)
             ),
             $respostaParseada->items
         );
+    }
+
+    private function recuperaUrlImagemGrande(string $urlImagemPequena): string
+    {
+        return preg_replace('/(@+)(.*).jpg$/', '$1.jpg', $urlImagemPequena);
     }
 }

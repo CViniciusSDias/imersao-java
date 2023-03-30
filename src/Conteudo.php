@@ -2,12 +2,10 @@
 
 namespace ImersaoJava;
 
-class Conteudo
+readonly class Conteudo
 {
     public function __construct(
-        public readonly string $titulo,
-        public readonly string $urlImagem,
-    )
-    {
-    }
+        public string $titulo,
+        public string $urlImagem,
+    ) { }
 }
